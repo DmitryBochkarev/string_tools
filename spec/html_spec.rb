@@ -166,5 +166,19 @@ describe StringTools::HTML do
         MARKUP
       end
     end
+
+    context 'invalid links' do
+      subject { StringTools::HTML.remove_links(html, whitelist: ['фермаежей.рф']) }
+
+      let(:html) do
+        <<-MARKUP
+          <a href="file://%5C%5Cab.ru%5Csharedfolders%5C%D0%9F%D0%A6%5CPRICES%5C%D0%9D%D0%B0%D0%B4%D0%BE%D0%BC%D0%BD%D0%B8%D0%BA%D0%B8%5C%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BA%D0%B8%D0%BD%5C2015%5C113.%20%D0%9D%D0%B0%D1%83%D1%82%D0%B8%D0%BB%D0%B8%D1%83%D1%81%5C4.png">www.фермаежей.рф</a>
+        MARKUP
+      end
+
+      it 'should keep only whitelisted links' do
+        is_expected.to eq html
+      end
+    end
   end
 end

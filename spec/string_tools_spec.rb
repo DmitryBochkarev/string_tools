@@ -31,6 +31,12 @@ describe StringTools do
       sanitized_string = described_class.sanitize(origin_str)
       expect(sanitized_string).to eq '<a href="http://www.xn--80ajbaetq5a8a.xn--p1ai/">www.фермаежей.рф</a>'
     end
+
+    it 'ignore ivalid links' do
+      origin_str = '<img height="180" src="file://%5C%5Cab.ru%5Csharedfolders%5C%D0%9F%D0%A6%5CPRICES%5C%D0%9D%D0%B0%D0%B4%D0%BE%D0%BC%D0%BD%D0%B8%D0%BA%D0%B8%5C%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BA%D0%B8%D0%BD%5C2015%5C113.%20%D0%9D%D0%B0%D1%83%D1%82%D0%B8%D0%BB%D0%B8%D1%83%D1%81%5C4.png" width="289">'
+      sanitized_string = described_class.sanitize(origin_str)
+      expect(sanitized_string).to eq origin_str
+    end
   end
 
   describe '#strip_all_tags_and_entities' do
@@ -105,6 +111,12 @@ describe StringTools do
       let(:url) { 'http://test.com/?a=b' }
 
       it { expect(described_class.add_params_to_url(url, a: 'c')).to eq 'http://test.com/?a=c' }
+    end
+
+    context 'when url invalid' do
+      let(:url) { 'file://%5C%5Cab.ru%5Csharedfolders%5C%D0%9F%D0%A6%5CPRICES%5C%D0%9D%D0%B0%D0%B4%D0%BE%D0%BC%D0%BD%D0%B8%D0%BA%D0%B8%5C%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BA%D0%B8%D0%BD%5C2015%5C113.%20%D0%9D%D0%B0%D1%83%D1%82%D0%B8%D0%BB%D0%B8%D1%83%D1%81%5C4.png' }
+
+      it { expect(described_class.add_params_to_url(url, a: 'c')).to eq url }
     end
   end
 end

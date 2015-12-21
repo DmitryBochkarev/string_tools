@@ -188,9 +188,9 @@ module StringTools
       def call(env)
         node = env[:node]
         case node.name
-        when 'a'.freeze
+        when 'a'
           normalize_link node, 'href'.freeze
-        when 'img'.freeze
+        when 'img'
           normalize_link node, 'src'.freeze
         end
       end
@@ -200,6 +200,7 @@ module StringTools
       def normalize_link(node, attr_name)
         return unless node[attr_name]
         node[attr_name] = Addressable::URI.parse(node[attr_name]).normalize.to_s
+      rescue IDN::Idna::IdnaError => _e # нативная библиотека бросает исключение на невалидный урл
       end
     end
 
@@ -223,6 +224,8 @@ module StringTools
       uri = Addressable::URI.parse("http://#{url}") unless uri.scheme
       uri.query_values = (uri.query_values || {}).merge!(params.stringify_keys) if params.present?
       uri.normalize.to_s
+    rescue IDN::Idna::IdnaError => _e # нативная библиотека бросает исключение на невалидный урл
+      url
     end
   end
   extend Uri

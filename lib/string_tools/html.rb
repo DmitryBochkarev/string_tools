@@ -73,6 +73,7 @@ module StringTools
         elsif !whitelisted?(SimpleIDN.to_unicode(uri.host))
           replace_with_content node
         end
+      rescue IDN::Idna::IdnaError => _e # нативная библиотека бросает исключение на невалидный урл
       end
 
       def whitelisted?(domain)
